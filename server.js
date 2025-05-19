@@ -12,7 +12,8 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB Connection
-mongoose.connect('mongodb+srv://arghya0812:Argcri@1209@cluster0.jysdx.mongodb.net/loginMERN_1?retryWrites=true&w=majority', {
+mongoose.connect('mongodb+srv://arghya0812:Argcri%401209@cluster0.jysdx.mongodb.net/loginMERN_1'
+, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
