@@ -64,18 +64,29 @@ const authenticate = async (req, res, next) => {
 app.post('/signup', async (req, res) => {
   const { email, username, password } = req.body;
   try {
-    const existingUser = await User.findOne({ email });
+    // Check both email and username for uniqueness
+    const existingUser = await User.findOne({
+      $or: [{ email }, { username }]
+    });
     if (existingUser) {
-      return res.status(400).json({ message: 'User Already Exists' });
+      return res.status(400).json({ message: 'User with this email or username already exists' });
     }
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({ email, username, password: hashedPassword });
     await newUser.save();
+
     res.status(201).json({ message: 'Sign up Successful' });
   } catch (err) {
+    if (err.code === 11000) {
+      return res.status(400).json({ message: 'Email or username already exists' });
+    }
+    console.error('Signup Error:', err);
     res.status(500).json({ message: 'Error during signup', error: err.message });
   }
 });
+
+
 
 app.post('/login', async (req, res) => {
     const user = await User.findOne({ username: req.body.username });
